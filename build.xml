@@ -37,7 +37,7 @@
 	</target>
 
 	<target name="compile" depends="init" description="编译">
-		<javac destdir="build/classes" srcdir="src" includeantruntime="false" fork="true" target="1.8">
+		<javac destdir="build/classes" srcdir="src" includeantruntime="false" fork="true" target="1.6">
 			<compilerarg line="-encoding GBK " />
 			<classpath refid="compile.path" />
 		</javac>
