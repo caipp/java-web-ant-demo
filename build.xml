@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="troy">
+	<!-- java源代码目录 -->
+	<property name="location" location="" />
+	<property name="src.dir" location="src" />
+	<!-- 构建目录 -->
+	<property name="build.dir" location="build" />
+	<!-- class文件目录 -->
+	<property name="build.classes" location="${build.dir}/classes" />
+	<!-- 打包目录 -->
+	<property name="build.war" location="${build.dir}/war" />
+
+	<!-- web 应用的名字，也是打包后war的名字 -->
+	<property name="web.name" value="troy" />
+	<!-- web 根目录 -->
+	<property name="web.root" value="WebContent" />
+	<property name="web.WEB-INF" location="${web.root}/WEB-INF" />
+	<property name="web.lib" location="${web.WEB-INF}/lib" />
+	<!-- tomcat根目录 -->
+	<!-- 加载环境变量 -->
+	<property environment="env" />
+
+	<!-- 定义编译时的classpath -->
+	<path id="compile.path">
+		<fileset dir="${web.lib}" includes="*.jar">
+		</fileset>
+		<fileset dir="${location}/lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+
+	<target name="init" description="初始化">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.classes}" />
+		<mkdir dir="${build.war}" />
+		<echo>初始化工作结束！</echo>
+	</target>
+
+	<target name="compile" depends="init" description="编译">
+		<javac destdir="build/classes" srcdir="src" includeantruntime="false" fork="true" target="1.8">
+			<compilerarg line="-encoding GBK " />
+			<classpath refid="compile.path" />
+		</javac>
+		<echo message="编译完成！" />
+	</target>
+
+
+	<target name="war" depends="compile" description="打包war文件">
+		<war destfile="${build.war}/${web.name}.war">
+			<fileset dir="${web.root}" includes="**/*.*" />
+			<lib dir="${web.lib}" />
+			<webinf dir="${web.WEB-INF}" />
+			<classes dir="${build.classes}" />
+		</war>
+		<echo>打包完成！</echo>
+	</target>
+</project>
