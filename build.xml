@@ -9,17 +9,14 @@
 	<property name="build.classes" location="${build.dir}/classes" />
 	<!-- 打包目录 -->
 	<property name="build.war" location="${build.dir}/war" />
-
+		
 	<!-- web 应用的名字，也是打包后war的名字 -->
 	<property name="web.name" value="troy" />
 	<!-- web 根目录 -->
 	<property name="web.root" value="WebContent" />
 	<property name="web.WEB-INF" location="${web.root}/WEB-INF" />
 	<property name="web.lib" location="${web.WEB-INF}/lib" />
-	<!-- tomcat根目录 -->
-	<!-- 加载环境变量 -->
-	<property environment="env" />
-
+		
 	<!-- 定义编译时的classpath -->
 	<path id="compile.path">
 		<fileset dir="${web.lib}" includes="*.jar">
@@ -28,24 +25,36 @@
 			<include name="**/*.jar" />
 		</fileset>
 	</path>
-
-	<target name="init" description="初始化">
+		
+	<target name="init" depends="clean" description="初始化">
 		<mkdir dir="${build.dir}" />
 		<mkdir dir="${build.classes}" />
 		<mkdir dir="${build.war}" />
 		<echo>初始化工作结束！</echo>
 	</target>
-
+		
 	<target name="compile" depends="init" description="编译">
-		<javac destdir="build/classes" srcdir="src" includeantruntime="false" fork="true" target="1.6">
-			<compilerarg line="-encoding GBK " />
+		<javac destdir="${build.classes}" srcdir="${src.dir}" includeantruntime="false" fork="true" target="1.6" source="1.6" encoding="GBK" >
 			<classpath refid="compile.path" />
 		</javac>
 		<echo message="编译完成！" />
 	</target>
-
-
-	<target name="war" depends="compile" description="打包war文件">
+	
+	<target name="resource" depends="compile">
+	    <copy todir="${build.classes}">
+	        <fileset dir="${src.dir}">
+	            <include name="**/*.xls" />
+	            <include name="**/*.doc" />
+	            <include name="**/*.properties" />
+	            <include name="**/*.dtd" />
+	            <include name="**/*.xml" />
+	        </fileset>
+	    </copy>
+	    <echo message="配置文件复制完成！" />
+	</target>
+	
+		
+	<target name="war" depends="resource" description="打包war文件">
 		<war destfile="${build.war}/${web.name}.war">
 			<fileset dir="${web.root}" includes="**/*.*" />
 			<lib dir="${web.lib}" />
@@ -53,5 +62,10 @@
 			<classes dir="${build.classes}" />
 		</war>
 		<echo>打包完成！</echo>
+	</target>
+		
+	<target name="clean" description="清理">
+		<delete dir="${build.dir}" />
+		<echo>清理完成！</echo>
 	</target>
 </project>
